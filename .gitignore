@@ -11,4 +11,4 @@ exports/
 tickets/
 
 # Local EventKit package reference documentation (DO NOT COMMIT OR OVERWRITE)
-README.md
+Package_README.md
