@@ -3,10 +3,11 @@
 const path = require('path');
 const EventKit = require('@nsaky/eventkit');
 
-const STORAGE_PATH = process.env.STORAGE_PATH
-  ? (path.isAbsolute(process.env.STORAGE_PATH)
-      ? path.normalize(process.env.STORAGE_PATH)
-      : path.resolve(process.cwd(), process.env.STORAGE_PATH))
+const customPath = process.env.EVENTKIT_STORAGE_PATH || process.env.STORAGE_PATH;
+const STORAGE_PATH = customPath
+  ? (path.isAbsolute(customPath)
+      ? path.normalize(customPath)
+      : path.resolve(process.cwd(), customPath))
   : path.resolve(__dirname, '../data/eventkit');
 
 let initialized = false;
