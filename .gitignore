@@ -1,0 +1,14 @@
+node_modules/
+.env
+.DS_Store
+npm-debug.log*
+
+# EventKit demo persistent data directory
+data/eventkit/
+
+# Exports / temporary generated files
+exports/
+tickets/
+
+# Local EventKit package reference documentation (DO NOT COMMIT OR OVERWRITE)
+README.md

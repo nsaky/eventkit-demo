@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventKit Demo — Event Registration & Ticket Management Toolkit</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo">EK</div>
+        <div class="brand-text">
+          <h1>EventKit Demo</h1>
+          <p>Registration &amp; Ticketing</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Operations</div>
+        <a class="nav-item active" data-page="overview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+          Overview
+        </a>
+        <a class="nav-item" data-page="events">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+          Events
+        </a>
+        <a class="nav-item" data-page="attendees">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Attendees
+        </a>
+        <a class="nav-item" data-page="tickets">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>
+          Tickets
+        </a>
+        <a class="nav-item" data-page="checkin">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Check-in
+        </a>
+        <a class="nav-item" data-page="validation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          Validation
+        </a>
+
+        <div class="nav-section-title" style="margin-top: 14px;">Analytics &amp; Data</div>
+        <a class="nav-item" data-page="analytics">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          Analytics
+        </a>
+        <a class="nav-item" data-page="export">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Data Export
+        </a>
+        <a class="nav-item" data-page="about">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          About EventKit
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="package-badge-box">
+          <span class="package-name">@nsaky/eventkit v1.0.0</span>
+          <span class="package-status">
+            <span class="status-dot"></span>
+            Storage Persistent JSON
+          </span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+      <!-- Top Navigation -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+          </button>
+          <div class="page-title">
+            <h2 id="currentPageTitle">Overview Dashboard</h2>
+            <p id="currentPageSubtitle">System metrics and recent event activity</p>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <span class="badge badge-success" id="backendStatusBadge">
+            <span class="status-dot"></span> Backend Connected
+          </span>
+          <button class="btn btn-secondary btn-sm" id="btnRefreshData" title="Refresh all data">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+            Refresh
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <main class="content-body">
+
+        <!-- =================== SECTION 1: OVERVIEW =================== -->
+        <section class="page-section active" id="sec-overview">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span class="stat-title">Total Events</span>
+              <span class="stat-value" id="statTotalEvents">0</span>
+              <span class="stat-subtext">Active persistent events</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-title">Total Attendees</span>
+              <span class="stat-value" id="statTotalAttendees">0</span>
+              <span class="stat-subtext">Registered participants</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-title">Total Tickets</span>
+              <span class="stat-value" id="statTotalTickets">0</span>
+              <span class="stat-subtext">Issued EK- tickets</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-title">Checked In</span>
+              <span class="stat-value" id="statTotalCheckedIn">0</span>
+              <span class="stat-subtext">Admitted at gate</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-title">Active Tickets</span>
+              <span class="stat-value" id="statActiveTickets">0</span>
+              <span class="stat-subtext">Valid for entry</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-title">Overall Attendance</span>
+              <span class="stat-value" id="statAttendanceRate">0%</span>
+              <span class="stat-subtext">Checked-in ratio</span>
+            </div>
+          </div>
+
+          <div class="quick-actions-bar">
+            <button class="btn btn-primary" onclick="openCreateEventModal()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+              Create Event
+            </button>
+            <button class="btn btn-secondary" onclick="openRegisterAttendeeModal()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+              Register Attendee
+            </button>
+            <button class="btn btn-secondary" onclick="navigateToPage('validation')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+              Validate Ticket
+            </button>
+            <button class="btn btn-secondary" onclick="navigateToPage('checkin')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Check-in Gate
+            </button>
+          </div>
+
+          <!-- Overview Events Table -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Event Overview</h3>
+                <p class="card-subtitle">Real-time status across all active events</p>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="navigateToPage('events')">View All</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table" id="overviewEventsTable">
+                <thead>
+                  <tr>
+                    <th>Event Name</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Capacity</th>
+                    <th>Registrations</th>
+                    <th>Attendance</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="overviewEventsBody">
+                  <tr><td colspan="7" class="text-center" style="padding: 24px; text-align: center; color: var(--text-muted);">Loading events...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Recent Activity Row -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Recent Registrations</h3>
+              </div>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Attendee</th>
+                      <th>Event</th>
+                      <th>Ticket ID</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentRegistrationsBody">
+                    <tr><td colspan="3" style="text-align:center; color: var(--text-muted); padding: 16px;">No registrations yet.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Recent Gate Admissions</h3>
+              </div>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Attendee</th>
+                      <th>Ticket ID</th>
+                      <th>Time</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentCheckInsBody">
+                    <tr><td colspan="3" style="text-align:center; color: var(--text-muted); padding: 16px;">No check-ins yet.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== SECTION 2: EVENTS =================== -->
+        <section class="page-section" id="sec-events">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Event Management</h3>
+                <p class="card-subtitle">Create, view, update, and manage persistent events</p>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="openCreateEventModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+                Create Event
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Event ID</th>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Capacity</th>
+                    <th>Registered</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="eventsListBody">
+                  <tr><td colspan="7" style="text-align:center; padding: 24px; color: var(--text-muted);">Loading events...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== SECTION 3: ATTENDEES =================== -->
+        <section class="page-section" id="sec-attendees">
+          <div class="card">
+            <div class="card-header" style="flex-wrap: wrap; gap: 12px;">
+              <div>
+                <h3 class="card-title">Attendee Directory</h3>
+                <p class="card-subtitle">Enrolled participants and tickets across events</p>
+              </div>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-primary btn-sm" onclick="openRegisterAttendeeModal()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+                  Register Attendee
+                </button>
+              </div>
+            </div>
+            <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; background-color: #FAFAFC;">
+              <div style="flex: 1; min-width: 200px;">
+                <input type="text" id="attendeeSearchInput" class="form-control" placeholder="Search by name, email, or ticket ID..." oninput="handleAttendeeSearch()">
+              </div>
+              <div style="min-width: 180px;">
+                <select id="attendeeEventFilter" class="form-control" onchange="handleAttendeeSearch()">
+                  <option value="">All Events</option>
+                </select>
+              </div>
+              <div style="min-width: 140px;">
+                <select id="attendeeStatusFilter" class="form-control" onchange="handleAttendeeSearch()">
+                  <option value="">All Check-in</option>
+                  <option value="true">Checked In</option>
+                  <option value="false">Pending</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Attendee ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Event</th>
+                    <th>Ticket ID</th>
+                    <th>Check-in Status</th>
+                    <th>Registered At</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="attendeesListBody">
+                  <tr><td colspan="8" style="text-align:center; padding: 24px; color: var(--text-muted);">Loading attendees...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== SECTION 4: TICKETS =================== -->
+        <section class="page-section" id="sec-tickets">
+          <div class="card">
+            <div class="card-header" style="flex-wrap: wrap; gap: 12px;">
+              <div>
+                <h3 class="card-title">Digital Tickets</h3>
+                <p class="card-subtitle">Cryptographic EK- ticket identifiers with scannable QR payloads</p>
+              </div>
+              <div style="display: flex; gap: 10px;">
+                <button class="btn btn-secondary btn-sm" onclick="openStandaloneTicketModal()">
+                  Issue Standalone Ticket
+                </button>
+              </div>
+            </div>
+            <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; background-color: #FAFAFC;">
+              <div style="flex: 1; min-width: 200px;">
+                <select id="ticketEventFilter" class="form-control" onchange="loadTickets()">
+                  <option value="">All Events</option>
+                </select>
+              </div>
+              <div style="min-width: 160px;">
+                <select id="ticketStatusFilter" class="form-control" onchange="filterTicketStatus()">
+                  <option value="">All Statuses</option>
+                  <option value="ACTIVE">ACTIVE</option>
+                  <option value="USED">USED</option>
+                  <option value="CANCELLED">CANCELLED</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Ticket ID</th>
+                    <th>Event Name</th>
+                    <th>Attendee</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Issued At</th>
+                    <th>Check-in</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="ticketsListBody">
+                  <tr><td colspan="8" style="text-align:center; padding: 24px; color: var(--text-muted);">Loading tickets...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== SECTION 5: CHECK-IN GATE =================== -->
+        <section class="page-section" id="sec-checkin">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Admit Attendee (Check-in)</h3>
+                  <p class="card-subtitle">Sets ticket to USED and marks attendee as checked in</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <form id="checkInForm" onsubmit="handleCheckInSubmit(event)">
+                  <div class="form-group">
+                    <label class="form-label" for="checkInEventSelect">Select Event *</label>
+                    <select id="checkInEventSelect" class="form-control" required onchange="loadEventQuickTickets(this.value)">
+                      <option value="">-- Choose Event --</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="checkInTicketId">Ticket ID *</label>
+                    <input type="text" id="checkInTicketId" class="form-control" placeholder="e.g. EK-A1B2C3D4E5" required style="font-family: monospace; text-transform: uppercase;">
+                    <div class="form-help">Enter or paste the ticket identifier, or pick from the active ticket list below.</div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary" style="width: 100%;" id="btnSubmitCheckIn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Check In Attendee
+                  </button>
+                </form>
+
+                <!-- Check-in Result Area -->
+                <div id="checkInResultBox" style="display: none;"></div>
+              </div>
+            </div>
+
+            <!-- Quick pick active tickets for this event -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Active Tickets for Event</h3>
+              </div>
+              <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Attendee</th>
+                      <th>Ticket ID</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="quickPickTicketsBody">
+                    <tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 16px;">Select an event on the left to see tickets.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Check-in History -->
+          <div class="card" style="margin-top: 24px;">
+            <div class="card-header">
+              <h3 class="card-title">Gate Admission History</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Attendee</th>
+                    <th>Ticket ID</th>
+                    <th>Event</th>
+                    <th>Admitted At</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="checkInHistoryBody">
+                  <tr><td colspan="5" style="text-align:center; padding: 16px; color: var(--text-muted);">No admissions recorded.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== SECTION 6: TICKET VALIDATION =================== -->
+        <section class="page-section" id="sec-validation">
+          <div style="max-width: 720px; margin: 0 auto;">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Non-Destructive Ticket Inspection</h3>
+                  <p class="card-subtitle">Validates authenticity without admitting or changing ticket state</p>
+                </div>
+                <span class="badge badge-info">Read-Only</span>
+              </div>
+              <div class="card-body">
+                <form id="validationForm" onsubmit="handleValidationSubmit(event)">
+                  <div class="form-group">
+                    <label class="form-label" for="valEventSelect">Select Event *</label>
+                    <select id="valEventSelect" class="form-control" required>
+                      <option value="">-- Choose Event --</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="valTicketId">Ticket ID *</label>
+                    <input type="text" id="valTicketId" class="form-control" placeholder="e.g. EK-7F92A1C4D8" required style="font-family: monospace; text-transform: uppercase;">
+                    <div class="form-help">Checks whether the ticket belongs to the event, is active, cancelled, or already checked in.</div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                    Validate Ticket
+                  </button>
+                </form>
+
+                <!-- Validation Result Card -->
+                <div id="validationResultBox" style="display: none;"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== SECTION 7: ANALYTICS =================== -->
+        <section class="page-section" id="sec-analytics">
+          <div class="card" style="margin-bottom: 24px;">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Event Attendance Analytics</h3>
+                <p class="card-subtitle">Real-time attendance percentages, capacity fill, and headcounts</p>
+              </div>
+              <div style="min-width: 220px;">
+                <select id="analyticsEventSelect" class="form-control" onchange="loadEventAnalytics(this.value)">
+                  <option value="">-- Select Event for Breakdown --</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-body" id="eventAnalyticsDetails">
+              <div class="empty-state">
+                <p class="empty-title">Select an event from the dropdown above</p>
+                <p class="empty-text">Detailed attendance rates, capacity utilization, and admittance charts will be calculated.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- All Events Comparison Table -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Comparative Event Performance</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Event Name</th>
+                    <th>Date</th>
+                    <th>Capacity</th>
+                    <th>Registrations</th>
+                    <th>Capacity Fill</th>
+                    <th>Checked In</th>
+                    <th>Attendance Rate</th>
+                  </tr>
+                </thead>
+                <tbody id="analyticsTableBody">
+                  <tr><td colspan="7" style="text-align:center; padding: 20px; color: var(--text-muted);">Loading performance metrics...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== SECTION 8: DATA EXPORT =================== -->
+        <section class="page-section" id="sec-export">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <!-- Export Attendees -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Export Participant Roster</h3>
+                  <p class="card-subtitle">Formatted CSV (RFC 4180) or JSON array of attendees</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <form onsubmit="handleExportAttendees(event)">
+                  <div class="form-group">
+                    <label class="form-label" for="exportAttendeesEventSelect">Select Event *</label>
+                    <select id="exportAttendeesEventSelect" class="form-control" required>
+                      <option value="">-- Choose Event --</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Export Format *</label>
+                    <div style="display: flex; gap: 16px; margin-top: 6px;">
+                      <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="radio" name="attendeesFormat" value="csv" checked> CSV (Spreadsheet)
+                      </label>
+                      <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="radio" name="attendeesFormat" value="json"> JSON
+                      </label>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                    Download Attendees File
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Export Full Event Snapshot -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Export Event Snapshot</h3>
+                  <p class="card-subtitle">Complete snapshot with event metadata, attendees, and summary</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <form onsubmit="handleExportEvent(event)">
+                  <div class="form-group">
+                    <label class="form-label" for="exportEventSelect">Select Event *</label>
+                    <select id="exportEventSelect" class="form-control" required>
+                      <option value="">-- Choose Event --</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Export Format *</label>
+                    <div style="display: flex; gap: 16px; margin-top: 6px;">
+                      <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="radio" name="eventFormat" value="json" checked> JSON Snapshot
+                      </label>
+                      <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="radio" name="eventFormat" value="csv"> CSV Roster
+                      </label>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                    Download Event Snapshot
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Export Preview Box -->
+          <div class="card" style="margin-top: 24px;">
+            <div class="card-header">
+              <h3 class="card-title">Export Content Preview</h3>
+            </div>
+            <div class="card-body">
+              <pre id="exportPreviewArea" style="background-color: #0F172A; color: #F8FAFC; padding: 16px; border-radius: var(--radius-md); font-family: monospace; font-size: 12px; max-height: 320px; overflow-y: auto;">Select an event above and click export to preview or download data.</pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== SECTION 9: ABOUT EVENTKIT =================== -->
+        <section class="page-section" id="sec-about">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">About EventKit</h3>
+                <p class="card-subtitle">Zero-database event registration &amp; ticket management toolkit</p>
+              </div>
+              <span class="badge badge-info">v1.0.0</span>
+            </div>
+            <div class="card-body" style="font-size: 14px; line-height: 1.7; color: var(--text-main);">
+              <p style="margin-bottom: 14px;">
+                <strong>EventKit (<code>@nsaky/eventkit</code>)</strong> is a lightweight, zero-database Node.js toolkit for event registration, digital ticketing, QR code generation, ticket validation, attendee check-in, attendance analytics, search, and data export.
+              </p>
+
+              <div style="background-color: #FAFAFC; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 24px;">
+                <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 8px;">Package Information</h4>
+                <ul style="list-style-type: none; display: flex; flex-direction: column; gap: 6px;">
+                  <li><strong>npm Package:</strong> <a href="https://www.npmjs.com/package/@nsaky/eventkit" target="_blank" style="color: var(--primary-blue);">npmjs.com/package/@nsaky/eventkit</a></li>
+                  <li><strong>Package Repository:</strong> <a href="https://github.com/nsaky/eventkit.git" target="_blank" style="color: var(--primary-blue);">github.com/nsaky/eventkit.git</a></li>
+                  <li><strong>Demonstration Repository:</strong> <a href="https://github.com/nsaky/eventkit-demo.git" target="_blank" style="color: var(--primary-blue);">github.com/nsaky/eventkit-demo.git</a></li>
+                  <li><strong>Engine Requirements:</strong> Node.js &gt;= 22.0.0</li>
+                  <li><strong>Module System:</strong> CommonJS</li>
+                  <li><strong>Storage:</strong> Persistent JSON file storage with atomic temporary file renaming and async mutex protection</li>
+                </ul>
+              </div>
+
+              <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 12px;">Features Demonstrated in this Application</h4>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 24px;">
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                  <strong style="color: var(--primary-blue);">1. Event Lifecycle</strong>
+                  <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;"><code>createEvent</code>, <code>getEvent</code>, <code>getAllEvents</code>, <code>updateEvent</code>, and <code>deleteEvent</code> with cascading cleanup.</p>
+                </div>
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                  <strong style="color: var(--primary-blue);">2. Attendee Registration</strong>
+                  <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;"><code>registerAttendee</code> with email normalization, duplicate prevention, and capacity enforcement.</p>
+                </div>
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                  <strong style="color: var(--primary-blue);">3. Automatic Digital Ticketing</strong>
+                  <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;"><code>generateTicket</code> and retrieval via <code>getTicket</code>, <code>getAllTickets</code>, and <code>getTickets</code>.</p>
+                </div>
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                  <strong style="color: var(--primary-blue);">4. Scannable QR Codes</strong>
+                  <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;"><code>generateQRCode</code> in PNG Buffer and SVG vector formats encoding non-PII ticket references.</p>
+                </div>
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                  <strong style="color: var(--primary-blue);">5. Non-Destructive Validation</strong>
+                  <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;"><code>validateTicket</code> verifying validity, cancellation, wrong event, or prior check-in without mutating data.</p>
+                </div>
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                  <strong style="color: var(--primary-blue);">6. Arrival Check-In Gate</strong>
+                  <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;"><code>checkIn</code> and <code>getCheckInStatus</code> with duplicate arrival prevention and atomic batch persistence.</p>
+                </div>
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                  <strong style="color: var(--primary-blue);">7. Ticket Cancellation</strong>
+                  <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;"><code>cancelTicket</code> with state transition to <code>CANCELLED</code> and prevention of check-in.</p>
+                </div>
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                  <strong style="color: var(--primary-blue);">8. Attendance Analytics</strong>
+                  <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;"><code>getAttendanceStats</code> with live calculation of headcounts, attendance %, and capacity fill.</p>
+                </div>
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                  <strong style="color: var(--primary-blue);">9. Roster Search</strong>
+                  <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;"><code>searchAttendees</code> and <code>searchTicket</code> matching by name, email, or ticket ID.</p>
+                </div>
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                  <strong style="color: var(--primary-blue);">10. Data Export</strong>
+                  <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;"><code>exportAttendees</code> and <code>exportEvent</code> with RFC 4180 CSV escaping and JSON snapshots.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- =================== MODALS =================== -->
+
+  <!-- Modal: Create Event -->
+  <div class="modal-overlay" id="createEventModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Create New Event</h3>
+        <button class="modal-close" onclick="closeModal('createEventModal')">&times;</button>
+      </div>
+      <form id="createEventForm" onsubmit="handleCreateEventSubmit(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="evName">Event Name *</label>
+            <input type="text" id="evName" class="form-control" required placeholder="e.g. Annual Tech Symposium 2026">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="evDate">Event Date *</label>
+              <input type="date" id="evDate" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="evCapacity">Capacity Limit</label>
+              <input type="number" id="evCapacity" class="form-control" min="1" placeholder="Leave empty for unlimited">
+              <div class="form-help">Optional maximum registration count.</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="evLocation">Location / Venue</label>
+            <input type="text" id="evLocation" class="form-control" placeholder="e.g. Main Auditorium or Virtual">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="evDescription">Description</label>
+            <textarea id="evDescription" class="form-control" rows="3" placeholder="Brief event summary..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('createEventModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Event -->
+  <div class="modal-overlay" id="editEventModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Event</h3>
+        <button class="modal-close" onclick="closeModal('editEventModal')">&times;</button>
+      </div>
+      <form id="editEventForm" onsubmit="handleEditEventSubmit(event)">
+        <input type="hidden" id="editEvId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="editEvName">Event Name *</label>
+            <input type="text" id="editEvName" class="form-control" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="editEvDate">Date *</label>
+              <input type="date" id="editEvDate" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="editEvCapacity">Capacity</label>
+              <input type="number" id="editEvCapacity" class="form-control" min="1">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editEvLocation">Location</label>
+            <input type="text" id="editEvLocation" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editEvDescription">Description</label>
+            <textarea id="editEvDescription" class="form-control" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('editEventModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: View Event Details -->
+  <div class="modal-overlay" id="viewEventModal">
+    <div class="modal-dialog" style="max-width: 700px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="viewEvTitle">Event Details</h3>
+        <button class="modal-close" onclick="closeModal('viewEventModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="viewEvContent">
+        <!-- Injected via JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('viewEventModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Register Attendee -->
+  <div class="modal-overlay" id="registerAttendeeModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Register Attendee</h3>
+        <button class="modal-close" onclick="closeModal('registerAttendeeModal')">&times;</button>
+      </div>
+      <form id="registerAttendeeForm" onsubmit="handleRegisterAttendeeSubmit(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="regEventSelect">Select Event *</label>
+            <select id="regEventSelect" class="form-control" required>
+              <option value="">-- Choose Event --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="regName">Full Name *</label>
+            <input type="text" id="regName" class="form-control" required placeholder="e.g. Jane Smith">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="regEmail">Email Address *</label>
+            <input type="email" id="regEmail" class="form-control" required placeholder="e.g. jane.smith@example.com">
+            <div class="form-help">Normalized to lowercase automatically by EventKit.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="regPhone">Phone Number</label>
+            <input type="tel" id="regPhone" class="form-control" placeholder="e.g. +1234567890">
+            <div class="form-help">Optional participant contact number.</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('registerAttendeeModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Complete Registration</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: View Attendee Details -->
+  <div class="modal-overlay" id="viewAttendeeModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Attendee Details</h3>
+        <button class="modal-close" onclick="closeModal('viewAttendeeModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="viewAttendeeContent">
+        <!-- Injected via JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('viewAttendeeModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: View Ticket & QR Code -->
+  <div class="modal-overlay" id="viewTicketModal">
+    <div class="modal-dialog" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="viewTicketTitle">Digital Ticket</h3>
+        <button class="modal-close" onclick="closeModal('viewTicketModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="viewTicketContent">
+        <!-- Injected via JS -->
+      </div>
+      <div class="modal-footer" id="viewTicketFooter">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('viewTicketModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Standalone Ticket Generation -->
+  <div class="modal-overlay" id="standaloneTicketModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Issue Standalone Ticket</h3>
+        <button class="modal-close" onclick="closeModal('standaloneTicketModal')">&times;</button>
+      </div>
+      <form id="standaloneTicketForm" onsubmit="handleStandaloneTicketSubmit(event)">
+        <div class="modal-body">
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+            Demonstrates <code>EventKit.generateTicket(attendeeId, options)</code>. Enter an attendee ID to issue a ticket or retrieve an existing one.
+          </p>
+          <div class="form-group">
+            <label class="form-label" for="standaloneAttendeeSelect">Select Attendee *</label>
+            <select id="standaloneAttendeeSelect" class="form-control" required>
+              <option value="">-- Choose Attendee --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+              <input type="checkbox" id="standaloneReturnExisting" checked>
+              Return existing ticket if already issued (idempotent)
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('standaloneTicketModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Generate Ticket</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Generic Confirmation -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal-dialog" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="confirmTitle">Confirm Action</h3>
+        <button class="modal-close" onclick="closeModal('confirmModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMessage" style="color: var(--text-secondary); font-size: 13.5px; line-height: 1.5;"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('confirmModal')">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmExecuteBtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Client-side JavaScript -->
+  <script src="/js/app.js"></script>
+</body>
+</html>

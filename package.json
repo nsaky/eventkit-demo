@@ -1,0 +1,24 @@
+{
+  "name": "eventkit-demo",
+  "version": "1.0.0",
+  "description": "EventKit Demonstration Application - Event Registration & Ticket Management Toolkit",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node test/test-persistence.js && node test/test-e2e.js"
+  },
+  "keywords": [
+    "eventkit",
+    "events",
+    "tickets",
+    "qr-code",
+    "check-in",
+    "demo"
+  ],
+  "author": "Yasir Eqbal",
+  "license": "MIT",
+  "dependencies": {
+    "@nsaky/eventkit": "^1.0.0",
+    "express": "^5.3.0"
+  }
+}
