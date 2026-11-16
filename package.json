@@ -17,6 +17,9 @@
   ],
   "author": "Yasir Eqbal",
   "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "dependencies": {
     "@nsaky/eventkit": "^1.0.0",
     "express": "^5.3.0"

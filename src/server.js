@@ -76,8 +76,8 @@ async function startServer() {
     await getEventKit();
     console.log('EventKit successfully initialized.');
 
-    const server = app.listen(PORT, () => {
-      console.log(`EventKit Demo server is running on http://localhost:${PORT}`);
+    const server = app.listen(PORT, '0.0.0.0', () => {
+      console.log(`EventKit Demo server is running on port ${PORT}`);
     });
 
     return server;

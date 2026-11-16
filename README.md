@@ -114,7 +114,36 @@ eventkit-demo/
 
 ---
 
-## 6. How to Use the Application
+## 6. Deploying on Railway
+
+EventKit uses persistent JSON file storage. Railway is an ideal platform for deploying EventKit because it supports long-running Node.js containers with **Persistent Volumes**.
+
+### Quick Deployment via GitHub
+
+1. Push your repository to GitHub.
+2. Go to **[Railway.app](https://railway.app)** and log in.
+3. Click **"New Project"** &rarr; **"Deploy from GitHub repo"**.
+4. Select `eventkit-demo`.
+5. Railway will automatically detect the included `Dockerfile` and `railway.json`.
+
+### Attach a Persistent Volume (Recommended)
+
+To ensure that created events, registered attendees, and tickets permanently survive service redeployments and restarts:
+
+1. In your Railway project dashboard, click on the deployed service.
+2. Go to the **Volumes** tab (or click **+ New** &rarr; **Volume**).
+3. Set the **Mount Path** to:
+   ```text
+   /app/data/eventkit
+   ```
+4. Click **Add Volume**.
+5. Generate a public domain under **Settings** &rarr; **Networking** &rarr; **Generate Domain**.
+
+Your EventKit Demo is now live on Railway with persistent disk storage!
+
+---
+
+## 7. How to Use the Application
 
 ### 1. Overview Dashboard
 - View aggregate metrics: Total Events, Total Attendees, Total Tickets, Checked In, Active Tickets, and Overall Attendance Rate.
@@ -169,7 +198,7 @@ eventkit-demo/
 
 ---
 
-## 7. EventKit Integration Details
+## 8. EventKit Integration Details
 
 The application directly imports and executes `@nsaky/eventkit` methods:
 
@@ -203,7 +232,7 @@ The application directly imports and executes `@nsaky/eventkit` methods:
 
 ---
 
-## 8. Running Automated Tests
+## 9. Running Automated Tests
 
 Run the complete test suite including persistence verification and all 17 end-to-end API tests:
 
@@ -231,7 +260,7 @@ npm test
 
 ---
 
-## 9. Links & Reference
+## 10. Links & Reference
 
 - **EventKit on npm**: [https://www.npmjs.com/package/@nsaky/eventkit](https://www.npmjs.com/package/@nsaky/eventkit)
 - **EventKit Source Repository**: [https://github.com/nsaky/eventkit.git](https://github.com/nsaky/eventkit.git)
@@ -239,6 +268,6 @@ npm test
 
 ---
 
-## 10. License
+## 11. License
 
 This demonstration application is open-source software licensed under the [MIT License](LICENSE).
